@@ -1,24 +1,24 @@
 import React from "react";
+import Activity2 from "./modules/form";
 import { createClient } from "@/utils/supabase/server";
-import { signOut } from "./actions/actions";
-// import Todo from "@/components/todo/todo";
-
-export default async function Home() {
+import { redirect } from "next/navigation";
+import { signOut } from "../actions/actions";
+const page = async () => {
   const supabase = createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data, error } = await supabase.from("Todo").select();
-  // const todos: Todo[] | undefined = data ?? undefined;
-
+  if (!user) {
+    redirect("/sign-in");
+  }
   return (
     <>
       {!user ? (
-        <div className="flex items-center justify-center min-h-screen">
-          <p>Please login first.</p>
-        </div>
+        <>
+          <p>You are not Logged in</p>
+        </>
       ) : (
         <>
           <form action={signOut}>
@@ -29,11 +29,11 @@ export default async function Home() {
               Signout
             </button>
           </form>
-          <main className="flex flex-col min-h-screen items-center justify-center">
-            {/* <Todo data={todos} /> */}
-          </main>
+          <Activity2 />
         </>
       )}
     </>
   );
-}
+};
+
+export default page;
